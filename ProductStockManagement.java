@@ -79,23 +79,18 @@ public class ProductStockManagement {
     static void setupStock() {
         numStocks = getIntInput("[+] Insert number of Stock: ");
         catalogSizes = new int[numStocks];
-
         for (int i = 0; i < numStocks; i++) {
             System.out.println("'Insert number of catalogue for each stock.'");
             catalogSizes[i] = getIntInput("[+] Insert number of catalogue on stock [" + (i+1) + "]: ");
         }
-
-        // Create the stocks array with variable catalog sizes
         stocks = new String[numStocks][];
         for (int i = 0; i < numStocks; i++) {
             stocks[i] = new String[catalogSizes[i]];
-            // Initialize all slots as "EMPTY"
             for (int j = 0; j < catalogSizes[i]; j++) {
                 stocks[i][j] = "EMPTY";
             }
         }
-
-        System.out.println("----- SET UP STOCK SUCCEEDED -----");
+        System.out.println("----- Setup Stock is Successfully -----");
         isStockSetup = true;
         viewStock();
     }
@@ -110,15 +105,13 @@ public class ProductStockManagement {
     }
     static void insertProduct() {
         viewStock();
-
         int stockIndex = getIntInput("[+] Insert stock number: ") - 1;
-
         if (stockIndex < 0 || stockIndex >= numStocks) {
             System.out.println("Invalid stock number!");
             return;
         }
 
-        // Check if the selected stock has any empty slots
+//        to check empty slot
         boolean hasEmptySlot = false;
         for (int j = 0; j < catalogSizes[stockIndex]; j++) {
             if (stocks[stockIndex][j].equals("EMPTY")) {
@@ -131,24 +124,18 @@ public class ProductStockManagement {
             System.out.println("This stock is full! Cannot insert more products.");
             return;
         }
-
         int catalogIndex = getIntInput("[+] Insert catalog number: ") - 1;
-
         if (catalogIndex < 0 || catalogIndex >= catalogSizes[stockIndex]) {
             System.out.println("Invalid catalog number!");
             return;
         }
-
         if (!stocks[stockIndex][catalogIndex].equals("EMPTY")) {
             System.out.println("This slot is already occupied by: " + stocks[stockIndex][catalogIndex]);
             return;
         }
-
         System.out.print("[+] Insert product name: ");
         String productName = scanner.nextLine();
-
         stocks[stockIndex][catalogIndex] = productName;
-
         // Add to history
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -160,30 +147,23 @@ public class ProductStockManagement {
     }
     static void updateProduct() {
         viewStock();
-
         int stockIndex = getIntInput("[+] Insert stock number to update: ") - 1;
-
         if (stockIndex < 0 || stockIndex >= numStocks) {
             System.out.println("Invalid stock number!");
             return;
         }
-
         int catalogIndex = getIntInput("[+] Insert catalog number to update: ") - 1;
-
         if (catalogIndex < 0 || catalogIndex >= catalogSizes[stockIndex]) {
             System.out.println("Invalid catalog number!");
             return;
         }
-
         if (stocks[stockIndex][catalogIndex].equals("EMPTY")) {
             System.out.println("This slot is empty! Nothing to update.");
             return;
         }
-
         System.out.println("Current product: " + stocks[stockIndex][catalogIndex]);
         System.out.print("[+] Insert new product name: ");
         String newProductName = scanner.nextLine();
-
         String oldProductName = stocks[stockIndex][catalogIndex];
         stocks[stockIndex][catalogIndex] = newProductName;
 
@@ -199,18 +179,15 @@ public class ProductStockManagement {
     }
     static void deleteProduct() {
         viewStock();
-
         int stockIndex = getIntInput("[+] Insert stock number to delete from: ") - 1;
-
         if (stockIndex < 0 || stockIndex >= numStocks) {
             System.out.println("Invalid stock number!");
             return;
         }
-
         System.out.print("[+] Insert product name to delete: ");
         String productName = scanner.nextLine();
 
-        // Check if there are multiple instances of the product
+//        Check multi and ask user to choose which one to delete
         ArrayList<Integer> matchingPositions = new ArrayList<>();
         for (int j = 0; j < catalogSizes[stockIndex]; j++) {
             if (!stocks[stockIndex][j].equals("EMPTY") &&
@@ -218,26 +195,22 @@ public class ProductStockManagement {
                 matchingPositions.add(j);
             }
         }
-
         if (matchingPositions.isEmpty()) {
             System.out.println("Product not found in Stock [" + (stockIndex+1) + "]!");
             return;
         }
 
-        // If there's only one instance, delete it directly
+//        where is it delete
         if (matchingPositions.size() == 1) {
             int positionToDelete = matchingPositions.get(0);
             deleteProductFromPosition(stockIndex, positionToDelete);
             return;
         }
-
-        // If there are multiple instances, ask which one to delete
         System.out.println("Multiple instances of '" + productName + "' found in Stock [" + (stockIndex+1) + "]:");
         for (int i = 0; i < matchingPositions.size(); i++) {
             int catalogPos = matchingPositions.get(i);
             System.out.println((i+1) + ". Catalog position " + (catalogPos+1));
         }
-
         int selectionIndex = getIntInput("[+] Select which one to delete (1-" + matchingPositions.size() + "): ") - 1;
 
         if (selectionIndex < 0 || selectionIndex >= matchingPositions.size()) {
@@ -273,7 +246,6 @@ public class ProductStockManagement {
     static int getIntInput(String prompt) {
         int input = 0;
         boolean valid = false;
-
         while (!valid) {
             try {
                 System.out.print(prompt);
@@ -283,7 +255,6 @@ public class ProductStockManagement {
                 System.out.println("Please enter a valid number!");
             }
         }
-
         return input;
     }
 }
